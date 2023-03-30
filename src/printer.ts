@@ -1,6 +1,7 @@
+import type { ErrorLocation } from "./errors";
 import { normalizeLF } from "./utils";
 
-function codeFrame(src, loc) {
+function codeFrame(src: string, loc: ErrorLocation) {
     if (!loc || loc.line === void 0 || loc.column === void 0) {
         return "";
     }

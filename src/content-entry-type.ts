@@ -1,26 +1,34 @@
 import { fileURLToPath } from "node:url";
-import { parseFrontmatter } from "./utils";
-const markdownContentEntryType = {
-    extensions: [".md"],
-    async getEntryInfo({ fileUrl, contents }) {
+import type { ContentEntryType } from "astro";
+
+import { parseFrontmatter } from "./utils.js";
+
+export const markdownContentEntryType: ContentEntryType = {
+    extensions: ['.md'],
+    async getEntryInfo({ fileUrl, contents }: { fileUrl: URL; contents: string }) {
         const parsed = parseFrontmatter(contents, fileURLToPath(fileUrl));
         return {
             data: parsed.data,
             body: parsed.content,
             slug: parsed.data.slug,
-            rawData: parsed.matter
+            rawData: parsed.matter,
         };
-    }
+    },
 };
-const mdxContentEntryType = {
-    extensions: [".mdx"],
-    async getEntryInfo({ fileUrl, contents }) {
+
+/**
+ * MDX content type for compatibility with older `@astrojs/mdx` versions
+ * TODO: remove in next Astro minor release
+ */
+export const mdxContentEntryType: ContentEntryType = {
+    extensions: ['.mdx'],
+    async getEntryInfo({ fileUrl, contents }: { fileUrl: URL; contents: string }) {
         const parsed = parseFrontmatter(contents, fileURLToPath(fileUrl));
         return {
             data: parsed.data,
             body: parsed.content,
             slug: parsed.data.slug,
-            rawData: parsed.matter
+            rawData: parsed.matter,
         };
     },
     contentModuleTypes: `declare module 'astro:content' {
@@ -31,9 +39,5 @@ const mdxContentEntryType = {
 			remarkPluginFrontmatter: Record<string, any>;
 		}>;
 	}
-}`
-};
-export {
-    markdownContentEntryType,
-    mdxContentEntryType
+}`,
 };

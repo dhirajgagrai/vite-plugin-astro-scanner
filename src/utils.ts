@@ -2,11 +2,12 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
+import type { DiagnosticCode } from "@astrojs/compiler/shared/diagnostics";
 import type { AstroConfig } from "astro";
 import { normalizePath } from "vite";
 
-import { AstroSettings } from "./settings";
-import { AstroErrorData } from "./errors-data";
+import type { AstroSettings } from "./settings";
+import { type AstroErrorCodes, AstroErrorData } from "./errors-data";
 
 function resolvePages(config: AstroConfig) {
     return new URL("./pages", config.srcDir);
@@ -35,7 +36,7 @@ function endsWithPageExt(file: URL, settings: AstroSettings) {
     return false;
 }
 
-function resolveJsToTs(filePath) {
+function resolveJsToTs(filePath: string) {
     if (filePath.endsWith(".jsx") && !fs.existsSync(filePath)) {
         const tryPath = filePath.slice(0, -4) + ".tsx";
         if (fs.existsSync(tryPath)) {
@@ -61,10 +62,10 @@ export function isEndpoint(file: URL, settings: AstroSettings) {
     return !endsWithPageExt(file, settings);
 }
 
-export function parseFrontmatter(fileContents, filePath) {
+export function parseFrontmatter(fileContents: string, filePath: string) {
     try {
         return matter(fileContents);
-    } catch (e) {
+    } catch (e: any) {
         if (e.name === "YAMLException") {
             const err = e;
             err.id = filePath;
@@ -77,7 +78,7 @@ export function parseFrontmatter(fileContents, filePath) {
     }
 }
 
-export function resolvePath(specifier, importer) {
+export function resolvePath(specifier: string, importer: string) {
     if (specifier.startsWith(".")) {
         const absoluteSpecifier = path.resolve(path.dirname(importer), specifier);
         return resolveJsToTs(normalizePath(absoluteSpecifier));
@@ -86,7 +87,7 @@ export function resolvePath(specifier, importer) {
     }
 }
 
-export function getErrorDataByCode(code) {
+export function getErrorDataByCode(code: AstroErrorCodes | DiagnosticCode) {
     const entry = Object.entries(AstroErrorData).find((data) => data[1].code === code);
     if (entry) {
         return {
@@ -96,6 +97,6 @@ export function getErrorDataByCode(code) {
     }
 }
 
-export function normalizeLF(code) {
+export function normalizeLF(code: string) {
     return code.replace(/\r\n|\r(?!\n)|\n/g, "\n");
 }

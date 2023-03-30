@@ -1,7 +1,7 @@
-import { AstroConfig } from "astro";
+import type { AstroConfig } from "astro";
 import { type Plugin as VitePlugin, normalizePath } from "vite";
 
-import { AstroSettings, createBaseSettings } from "./settings";
+import { type AstroSettings, createBaseSettings } from "./settings";
 import { isEndpoint, isPage } from "./utils";
 import { scan } from "./scan";
 
@@ -39,7 +39,7 @@ export default function astroConstPlugin(
                 meta: {
                     ...meta,
                     astro: {
-                        ...(meta.astro ?? { hydratedComponents: [], clientOnlyComponents: [], scripts: [] }),
+                        ...meta.astro ?? { hydratedComponents: [], clientOnlyComponents: [], scripts: [] },
                         pageOptions,
                     },
                 },

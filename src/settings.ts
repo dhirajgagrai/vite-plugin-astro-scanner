@@ -1,4 +1,4 @@
-import {
+import type {
     AstroConfig,
     AstroAdapter,
     InjectedRoute,
@@ -6,7 +6,7 @@ import {
     AstroRenderer,
     InjectedScriptStage
 } from "astro";
-import type { TsConfigJson } from 'tsconfig-resolver';
+import type { TsConfigJson } from "tsconfig-resolver";
 import jsxRenderer from "astro/dist/jsx/renderer";
 
 import { markdownContentEntryType } from "./content-entry-type";

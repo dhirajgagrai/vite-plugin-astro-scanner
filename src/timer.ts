@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from "fs";
 
 // Type used by `bench-memory.js`
 interface Stat {
@@ -59,6 +59,7 @@ export class AstroTimer {
 	 */
 	writeStats() {
 		if (!this.enabled) return;
+		// @ts-expect-error: See astro codebase
 		fs.writeFileSync(process.env.ASTRO_TIMER_PATH, JSON.stringify(this.stats, null, 2));
 	}
 }
