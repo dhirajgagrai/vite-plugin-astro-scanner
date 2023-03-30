@@ -1,42 +1,20 @@
-import { AstroConfig, AstroAdapter, InjectedRoute, ContentEntryType, AstroRenderer, InjectedScriptStage } from "astro";
-import type { TsConfigJson } from 'tsconfig-resolver';
-import { type Plugin as VitePlugin } from "vite";
-import { normalizePath } from "vite";
+import { AstroConfig } from "astro";
+import { type Plugin as VitePlugin, normalizePath } from "vite";
 
-import { AstroTimer } from "./timer";
-
-import { createBaseSettings } from "./settings";
-
+import { AstroSettings, createBaseSettings } from "./settings";
 import { isEndpoint, isPage } from "./utils";
 import { scan } from "./scan";
 
-export interface AstroSettings {
-    config: AstroConfig;
-    adapter: AstroAdapter | undefined;
-    injectedRoutes: InjectedRoute[];
-    pageExtensions: string[];
-    contentEntryTypes: ContentEntryType[];
-    renderers: AstroRenderer[];
-    scripts: {
-        stage: InjectedScriptStage;
-        content: string;
-    }[];
-    tsConfig: TsConfigJson | undefined;
-    tsConfigPath: string | undefined;
-    watchFiles: string[];
-    forceDisableTelemetry: boolean;
-    timer: AstroTimer;
-}
-
-const constExports = (
+export default function astroConstPlugin(
     config: AstroConfig,
-    scanArgs: string[]
-): VitePlugin => {
+    scanArgs: string[],
+): VitePlugin {
     const settings: AstroSettings = createBaseSettings(config);
     return {
-        name: "astro:const-export",
+        name: "astro:const-meta",
         enforce: "post",
-        async transform(code, id, options) {
+
+        async transform(this, code, id, options) {
             if (!(options == null ? void 0 : options.ssr))
                 return;
 
@@ -45,31 +23,27 @@ const constExports = (
             try {
                 fileURL = new URL(`file://${filename}`);
             } catch (e) {
-                // handle e
+                // If we can't construct a valid URL, exit early
                 return;
             }
 
             const fileIsPage = isPage(fileURL, settings);
             const fileIsEndpoint = isEndpoint(fileURL, settings);
-            if (!(fileIsPage || fileIsEndpoint))
-                return;
-
+            if (!(fileIsPage || fileIsEndpoint)) return;
             const pageOptions = await scan(code, id, scanArgs);
-            const { meta = {} } = this.getModuleInfo(id) ?? {};
 
+            const { meta = {} } = this.getModuleInfo(id) ?? {};
             return {
                 code,
                 map: null,
                 meta: {
                     ...meta,
                     astro: {
-                        ...meta.astro ?? { hydratedComponents: [], clientOnlyComponents: [], scripts: [] },
-                        pageOptions
-                    }
-                }
+                        ...(meta.astro ?? { hydratedComponents: [], clientOnlyComponents: [], scripts: [] }),
+                        pageOptions,
+                    },
+                },
             };
-        }
+        },
     };
 }
-
-export default constExports;

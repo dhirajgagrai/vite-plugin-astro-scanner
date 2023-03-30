@@ -1,11 +1,11 @@
-import type { AstroConfig } from "astro";
-import { AstroSettings } from "./index";
-
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+
+import type { AstroConfig } from "astro";
 import { normalizePath } from "vite";
 
+import { AstroSettings } from "./settings";
 import { AstroErrorData } from "./errors-data";
 
 function resolvePages(config: AstroConfig) {

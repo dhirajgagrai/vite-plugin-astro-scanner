@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-astro-constants-meta",
-  "description": "Vite plugin to retrieve constants from Astro files",
+  "description": "Vite plugin to retrieve constants from Astro files and add them to module's meta property",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {

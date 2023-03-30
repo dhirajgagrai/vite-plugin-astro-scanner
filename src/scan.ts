@@ -1,23 +1,22 @@
 import * as eslexer from "es-module-lexer";
 
-function includesExport(code: string, BOOLEAN_EXPORTS: Set<string>) {
-    for (const name of BOOLEAN_EXPORTS) {
-        if (code.includes(name)) 
+function includesExport(code: string, booleanExports: Set<string>) {
+    for (const name of booleanExports) {
+        if (code.includes(name))
             return true;
     }
     return false;
 }
 
 let didInit = false;
+
 export async function scan<T extends string>(
     code: string,
     id: string,
     scanArgs: T[]
-):
-    Promise<Record<T, string | boolean> | Record<string, never>> {
-    const BOOLEAN_EXPORTS = new Set(scanArgs);
-
-    if (!includesExport(code, BOOLEAN_EXPORTS))
+): Promise<Record<T, string | boolean> | Record<string, never>> {
+    const booleanExports = new Set(scanArgs);
+    if (!includesExport(code, booleanExports))
         return {};
 
     if (!didInit) {
@@ -26,14 +25,12 @@ export async function scan<T extends string>(
     }
 
     const [_, exports] = eslexer.parse(code, id);
-
     const pageOptions = {};
     for (const _export of exports) {
         const { n: name, le: endOfLocalName } = _export;
         if (name === "prerender")
             continue;
-
-        if (BOOLEAN_EXPORTS.has(name as T)) {
+        if (booleanExports.has(name as T)) {
             const prefix = code.slice(0, endOfLocalName).split("export").pop().trim().replace(name, "").trim();
             const suffix = code.slice(endOfLocalName).trim().replace(/=/, "").trim().split(/[;\n]/)[0];
             if (prefix !== "const") {
@@ -43,6 +40,5 @@ export async function scan<T extends string>(
             }
         }
     }
-
     return pageOptions;
 }
