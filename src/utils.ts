@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
-import matter from "gray-matter";
 
 import type { DiagnosticCode } from "@astrojs/compiler/shared/diagnostics";
 import type { AstroConfig } from "astro";
 import { normalizePath } from "vite";
+import matter from "gray-matter";
 
 import type { AstroSettings } from "./settings";
 import { type AstroErrorCodes, AstroErrorData } from "./errors-data";

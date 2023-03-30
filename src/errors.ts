@@ -1,6 +1,6 @@
 import type { DiagnosticCode } from "@astrojs/compiler/shared/diagnostics";
-import type { AstroErrorCodes } from "./errors-data";
 
+import type { AstroErrorCodes } from "./errors-data";
 import { getErrorDataByCode } from "./utils";
 import { codeFrame } from "./printer";
 

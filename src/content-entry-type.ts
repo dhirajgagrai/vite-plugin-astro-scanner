@@ -1,4 +1,5 @@
 import { fileURLToPath } from "node:url";
+
 import type { ContentEntryType } from "astro";
 
 import { parseFrontmatter } from "./utils.js";

@@ -30,7 +30,7 @@ export default function astroConstPlugin(
             const fileIsPage = isPage(fileURL, settings);
             const fileIsEndpoint = isEndpoint(fileURL, settings);
             if (!(fileIsPage || fileIsEndpoint)) return;
-            const pageOptions = await scan(code, id, scanArgs);
+            const pluginPageOptions = await scan(code, id, scanArgs);
 
             const { meta = {} } = this.getModuleInfo(id) ?? {};
             return {
@@ -40,7 +40,10 @@ export default function astroConstPlugin(
                     ...meta,
                     astro: {
                         ...meta.astro ?? { hydratedComponents: [], clientOnlyComponents: [], scripts: [] },
-                        pageOptions,
+                        pageOptions: {
+                            ...meta.astro.pageOptions,
+                            ...pluginPageOptions
+                        }
                     },
                 },
             };
