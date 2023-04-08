@@ -100,3 +100,16 @@ export function getErrorDataByCode(code: AstroErrorCodes | DiagnosticCode) {
 export function normalizeLF(code: string) {
     return code.replace(/\r\n|\r(?!\n)|\n/g, "\n");
 }
+
+export function parseExportData(suffix: string) {
+    if (/^-?\d+$/.test(suffix)) {
+        return parseInt(suffix);
+    }
+    if (suffix === "true") {
+        return true;
+    }
+    if (suffix === "false") {
+        return false;
+    }
+    return suffix.replace(/["']/g, "");
+}
