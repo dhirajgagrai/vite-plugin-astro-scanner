@@ -9,11 +9,13 @@
   },
   "author": "dhirajgagrai <https://dhirajgagrai.dev>",
   "license": "ISC",
-  "dependencies": {
+  "peerDependencies": {
     "astro": "^2.1.8",
-    "es-module-lexer": "^1.2.0",
-    "gray-matter": "^4.0.3",
     "vite": "^4.2.1"
+  },
+  "dependencies": {
+    "es-module-lexer": "^1.2.0",
+    "gray-matter": "^4.0.3"
   },
   "devDependencies": {
     "@types/node": "^18.15.5",
