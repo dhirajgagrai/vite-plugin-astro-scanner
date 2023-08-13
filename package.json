@@ -4,7 +4,6 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "clean": "rimraf dist",
     "build": "rimraf dist && tsc"
   },
