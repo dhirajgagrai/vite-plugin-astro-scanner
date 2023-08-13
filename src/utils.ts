@@ -1,6 +1,8 @@
 import type { AstroConfig } from "astro";
 
 const SUPPORTED_MARKDOWN_FILE_EXTENSIONS = [
+    ".astro",
+    ".html",
     ".markdown",
     ".mdown",
     ".mkdn",
@@ -8,7 +10,6 @@ const SUPPORTED_MARKDOWN_FILE_EXTENSIONS = [
     ".mdwn",
     ".md"
 ];
-const pageExtensions = ['.astro', '.html', ...SUPPORTED_MARKDOWN_FILE_EXTENSIONS];
 
 function resolvePages(config: AstroConfig) {
     return new URL("./pages", config.srcDir);
@@ -30,7 +31,7 @@ function isPublicRoute(file: URL, config: AstroConfig) {
 }
 
 function endsWithPageExt(file: URL,) {
-    for (const ext of pageExtensions) {
+    for (const ext of SUPPORTED_MARKDOWN_FILE_EXTENSIONS) {
         if (file.toString().endsWith(ext))
             return true;
     }
