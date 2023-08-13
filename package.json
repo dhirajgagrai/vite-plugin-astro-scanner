@@ -1,11 +1,12 @@
 {
   "name": "vite-plugin-astro-constants-metadata",
-  "description": "Vite plugin to retrieve and add constants from Astro file to module's metadata",
+  "description": "Experimental Vite plugin to retrieve and add constants from Astro file to module's metadata",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "clean": "rimraf dist",
-    "build": "tsc"
+    "build": "rimraf dist && tsc"
   },
   "author": "dhirajgagrai <https://dhirajgagrai.dev>",
   "license": "ISC",
@@ -14,8 +15,7 @@
     "vite": "^4.2.1"
   },
   "dependencies": {
-    "es-module-lexer": "^1.2.0",
-    "gray-matter": "^4.0.3"
+    "es-module-lexer": "^1.2.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.56.0",

@@ -1,13 +1,14 @@
-import fs from "fs";
-import path from "path";
-
-import type { DiagnosticCode } from "@astrojs/compiler/shared/diagnostics";
 import type { AstroConfig } from "astro";
-import { normalizePath } from "vite";
-import matter from "gray-matter";
 
-import type { AstroSettings } from "./settings";
-import { type AstroErrorCodes, AstroErrorData } from "./errors-data";
+const SUPPORTED_MARKDOWN_FILE_EXTENSIONS = [
+    ".markdown",
+    ".mdown",
+    ".mkdn",
+    ".mkd",
+    ".mdwn",
+    ".md"
+];
+const pageExtensions = ['.astro', '.html', ...SUPPORTED_MARKDOWN_FILE_EXTENSIONS];
 
 function resolvePages(config: AstroConfig) {
     return new URL("./pages", config.srcDir);
@@ -28,77 +29,28 @@ function isPublicRoute(file: URL, config: AstroConfig) {
     return true;
 }
 
-function endsWithPageExt(file: URL, settings: AstroSettings) {
-    for (const ext of settings.pageExtensions) {
+function endsWithPageExt(file: URL,) {
+    for (const ext of pageExtensions) {
         if (file.toString().endsWith(ext))
             return true;
     }
     return false;
 }
 
-function resolveJsToTs(filePath: string) {
-    if (filePath.endsWith(".jsx") && !fs.existsSync(filePath)) {
-        const tryPath = filePath.slice(0, -4) + ".tsx";
-        if (fs.existsSync(tryPath)) {
-            return tryPath;
-        }
-    }
-    return filePath;
-}
-
-export function isPage(file: URL, settings: AstroSettings) {
-    if (!isInPagesDir(file, settings.config))
+export function isPage(file: URL, config: AstroConfig) {
+    if (!isInPagesDir(file, config))
         return false;
-    if (!isPublicRoute(file, settings.config))
+    if (!isPublicRoute(file, config))
         return false;
-    return endsWithPageExt(file, settings);
+    return endsWithPageExt(file);
 }
 
-export function isEndpoint(file: URL, settings: AstroSettings) {
-    if (!isInPagesDir(file, settings.config))
+export function isEndpoint(file: URL, config: AstroConfig) {
+    if (!isInPagesDir(file, config))
         return false;
-    if (!isPublicRoute(file, settings.config))
+    if (!isPublicRoute(file, config))
         return false;
-    return !endsWithPageExt(file, settings);
-}
-
-export function parseFrontmatter(fileContents: string, filePath: string) {
-    try {
-        return matter(fileContents);
-    } catch (e: any) {
-        if (e.name === "YAMLException") {
-            const err = e;
-            err.id = filePath;
-            err.loc = { file: e.id, line: e.mark.line + 1, column: e.mark.column };
-            err.message = e.reason;
-            throw err;
-        } else {
-            throw e;
-        }
-    }
-}
-
-export function resolvePath(specifier: string, importer: string) {
-    if (specifier.startsWith(".")) {
-        const absoluteSpecifier = path.resolve(path.dirname(importer), specifier);
-        return resolveJsToTs(normalizePath(absoluteSpecifier));
-    } else {
-        return specifier;
-    }
-}
-
-export function getErrorDataByCode(code: AstroErrorCodes | DiagnosticCode) {
-    const entry = Object.entries(AstroErrorData).find((data) => data[1].code === code);
-    if (entry) {
-        return {
-            name: entry[0],
-            data: entry[1]
-        };
-    }
-}
-
-export function normalizeLF(code: string) {
-    return code.replace(/\r\n|\r(?!\n)|\n/g, "\n");
+    return !endsWithPageExt(file);
 }
 
 export function parseExportData(suffix: string) {

@@ -1,7 +1,6 @@
 import type { AstroConfig } from "astro";
 import { type Plugin as VitePlugin, normalizePath } from "vite";
 
-import { type AstroSettings, createBaseSettings } from "./settings";
 import { isEndpoint, isPage } from "./utils";
 import { scan } from "./scan";
 
@@ -9,7 +8,6 @@ export default function astroConstPlugin(
     config: AstroConfig,
     scanArgs: string[],
 ): VitePlugin {
-    const settings: AstroSettings = createBaseSettings(config);
     return {
         name: "astro:const-meta",
         enforce: "post",
@@ -27,8 +25,8 @@ export default function astroConstPlugin(
                 return;
             }
 
-            const fileIsPage = isPage(fileURL, settings);
-            const fileIsEndpoint = isEndpoint(fileURL, settings);
+            const fileIsPage = isPage(fileURL, config);
+            const fileIsEndpoint = isEndpoint(fileURL, config);
             if (!(fileIsPage || fileIsEndpoint)) return;
             const pluginPageOptions = await scan(code, id, scanArgs);
 
