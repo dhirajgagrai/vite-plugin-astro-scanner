@@ -1,5 +1,6 @@
+import path from "node:path";
 import type { AstroConfig } from "astro";
-import { type Plugin as VitePlugin, normalizePath } from "vite";
+import { type Plugin as VitePlugin } from "vite";
 
 import { isEndpoint, isPage } from "./utils";
 import { scan } from "./scan";
@@ -16,7 +17,7 @@ export default function astroConstPlugin(
             if (!(options == null ? void 0 : options.ssr))
                 return;
 
-            const filename = normalizePath(id);
+            const filename = path.normalize(id);
             let fileURL: URL;
             try {
                 fileURL = new URL(`file://${filename}`);
