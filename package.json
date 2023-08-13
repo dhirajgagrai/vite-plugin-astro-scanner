@@ -1,5 +1,5 @@
 {
-  "name": "vite-plugin-astro-constants-metadata",
+  "name": "vite-plugin-astro-const-scanner",
   "description": "Experimental Vite plugin to retrieve and add constants from Astro file to module's metadata",
   "type": "module",
   "main": "dist/index.js",

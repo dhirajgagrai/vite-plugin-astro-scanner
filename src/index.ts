@@ -5,12 +5,12 @@ import { type Plugin as VitePlugin } from "vite";
 import { isEndpoint, isPage } from "./utils";
 import { scan } from "./scan";
 
-export default function astroConstPlugin(
+export default function astroConstScannerPlugin(
     config: AstroConfig,
     scanArgs: string[],
 ): VitePlugin {
     return {
-        name: "astro:const-meta",
+        name: "vite-plugin-astro-const-scanner",
         enforce: "post",
 
         async transform(this, code, id, options) {
